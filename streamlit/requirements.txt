@@ -56,5 +56,4 @@ tzdata==2025.2
 urllib3==2.4.0
 watchdog==6.0.0
 narwhals==1.41.0
-packaging==25.0
 plotly==6.1.2
