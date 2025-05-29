@@ -4,7 +4,6 @@ import torch.nn as nn
 from torchvision import transforms
 from PIL import Image
 import numpy as np
-import cv2
 import timm
 import io
 import os
