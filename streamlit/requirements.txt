@@ -45,10 +45,10 @@ streamlit==1.45.1
 sympy==1.14.0
 tenacity==9.1.2
 threadpoolctl==3.6.0
-timm==0.9.16
+timm==1.0.15
 toml==0.10.2
-torch==2.1.0
-torchvision==0.16.0
+torch==2.0.1
+torchvision==0.15.2
 tornado==6.5.1
 tqdm==4.67.1
 typing_extensions==4.13.2
