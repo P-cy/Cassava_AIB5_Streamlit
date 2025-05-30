@@ -1,9 +1,13 @@
 [server]
 fileWatcherType = "none"
 runOnSave = false
+maxUploadSize = 200
 
 [global]
 developmentMode = false
 
 [browser]
 gatherUsageStats = false
+
+[theme]
+base = "light"
