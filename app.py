@@ -263,22 +263,10 @@ def validate_cassava_image(image, model):
 @st.cache_resource
 def load_model():
     try:
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        st.write(f"Using device: {device}")
-        
-        # Print available models for debugging
-        st.write("Checking available models...")
-        try:
-            model_names = timm.list_models('*vit*')
-            st.write(f"Available ViT models: {', '.join(model_names[:5])}...")
-        except Exception as e:
-            st.write(f"Could not list models: {str(e)}")
-        
-        st.write("Creating model...")
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') 
         model = vit_base_patch32_model(num_classes=5)
         model_path = "streamlit/assets/model/best_model.pth"
         
-        st.write(f"Loading model from: {model_path}")
         if not os.path.exists(model_path):
             st.error(f"Model file not found at {model_path}")
             return None, None
@@ -288,10 +276,8 @@ def load_model():
         else:
             checkpoint = torch.load(model_path, map_location='cpu')
 
-        st.write("Removing module prefix...")
         checkpoint = remove_module_prefix(checkpoint)
 
-        st.write("Loading state dict...")
         try:
             model.load_state_dict(checkpoint)
         except Exception as e:
@@ -304,7 +290,6 @@ def load_model():
 
         model.to(device)
         model.eval()
-        st.write("Model loaded successfully!")
         return model, device
     except FileNotFoundError:
         st.error("ไม่พบไฟล์โมเดล กรุณาตรวจสอบเส้นทางไฟล์")
