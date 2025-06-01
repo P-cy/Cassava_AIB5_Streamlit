@@ -1,0 +1,21 @@
+[server]
+fileWatcherType = "none"
+runOnSave = false
+maxUploadSize = 200
+enableCORS = false
+enableXsrfProtection = false
+enableWebsocketCompression = false
+
+[global]
+developmentMode = false
+disableWatchdogWarning = true
+showWarningOnDirectExecution = false
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+base = "light"
+
+[logger]
+level = "error" 
