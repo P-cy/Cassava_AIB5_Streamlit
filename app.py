@@ -323,7 +323,7 @@ def predict_disease(model, image, device):
             probabilities = torch.nn.functional.softmax(outputs, dim=1)
             predictions = probabilities.cpu().numpy()[0]
         
-        class_names = ['CBB', 'CBSD', 'CMD', 'CGM', 'HEALTHY']
+        class_names = ['CBB', 'CBSD', 'CGM', 'CMD', 'HEALTHY']
         results = dict(zip(class_names, predictions))
         
         return results
