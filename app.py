@@ -264,7 +264,7 @@ def load_model():
     try:
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         model = vit_base_patch32_model(num_classes=5)
-        model_path = "assets/model/best_model.pth"
+        model_path = "streamlit/assets/model/best_model.pth"
         
         if torch.cuda.is_available():
             checkpoint = torch.load(model_path)
