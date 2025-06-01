@@ -175,10 +175,11 @@ class vit_base_patch32_model(nn.Module):
     def __init__(self, num_classes):
         super().__init__()
         
+        # Using a more widely available model
         self.backbone = timm.create_model(
             'vit_base_patch32_clip_448.laion2b_ft_in12k_in1k', 
             pretrained=True,
-            num_classes=0  
+            num_classes=0
         )
         
         if hasattr(self.backbone, 'set_grad_checkpointing'):
