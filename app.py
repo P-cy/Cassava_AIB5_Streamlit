@@ -371,7 +371,6 @@ def display_image_slider(images, caption=""):
         st.warning("ไม่พบรูปภาพตัวอย่าง")
         return
         
-    # Use session state to keep track of current image index
     if f"image_index_{caption}" not in st.session_state:
         st.session_state[f"image_index_{caption}"] = 0
     
@@ -386,7 +385,7 @@ def display_image_slider(images, caption=""):
     
     with col2:
         img = Image.open(images[current_index])
-        st.image(img, caption=caption, use_column_width=True)
+        st.image(img, caption=caption, use_container_width=True)
     
     with col3:
         if st.button("ถัดไป ➡️", key=f"next_{caption}"):
