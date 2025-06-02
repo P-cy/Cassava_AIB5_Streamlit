@@ -1,10 +1,7 @@
 import os
 import warnings
 warnings.filterwarnings('ignore')
-
-# Disable watchdog to prevent file watching issues
 os.environ['STREAMLIT_SERVER_FILE_WATCHER_TYPE'] = 'none'
-
 import streamlit as st
 import torch
 import torch.nn as nn
@@ -16,6 +13,7 @@ from torchvision import transforms
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
+import glob
 
 st.set_page_config(
     page_title="ระบบวิเคราะห์โรคมันสำปะหลัง",
@@ -81,7 +79,8 @@ DISEASE_INFO = {
         'symptoms': ' แสดงอาการใบจุดเหลี่ยมฉํ่านํ้า ใบไหม้ ใบเหี่ยว ยางไหลจนถึงอากยอดเหี่ยวและแห้งตายลงมา นอกจากนี้ยังทำให้ระบบท่อนํ้าอาหารของลำต้นและรากเน่า',
         'treatment': 'ปลูกพืชอายุสั้นเป็นพืชหมุนเวียน, ใช้ท่อนพันธุ์ที่ปราศจากเชื้อ',
         'severity': 'สูง',
-        'emoji': '🟡'
+        'emoji': '🟡',
+        'example_images': sorted(glob.glob('streamlit/assets/img/CBB/*.jpg') + glob.glob('streamlit/assets/img/CBB/*.png'))
     },
     'CBSD': {
         'name': 'CBSD (Cassava Brown Streak Disease)',
@@ -90,7 +89,8 @@ DISEASE_INFO = {
         'symptoms': 'ใบเหี่ยวเฉา มีลายสีน้ำตาลบนลำต้น และรากเน่าแห้งแข็ง',
         'treatment': 'ใช้พันธุ์มันสำปะหลังต้านทานโรคพืช, กำจัดแมลงหวี่ขาว',
         'severity': 'สูง',
-        'emoji': '🍂'
+        'emoji': '🍂',
+        'example_images': sorted(glob.glob('streamlit/assets/img/CBSD/*.jpg') + glob.glob('streamlit/assets/img/CBSD/*.png'))
     },
     'CGM': {
         'name': 'CGM (Cassava Green Mottle)',
@@ -99,7 +99,8 @@ DISEASE_INFO = {
         'symptoms': 'ใบเกิดการบิดเบี้ยว และเจริญเติบโตช้า ต้นไม้จะตายได้หากโรครุนแรง',
         'treatment': 'ใช้พันธุ์มันสำปะหลังต้านทานโรคพืช, กำจัดแมลงหวี่ขาว',
         'severity': 'ต่ำ',
-        'emoji': '🦠'
+        'emoji': '🦠',
+        'example_images': sorted(glob.glob('streamlit/assets/img/CGM/*.jpg') + glob.glob('streamlit/assets/img/CGM/*.png'))
     },
     'CMD': {
         'name': 'CMD (Cassava Mosaic Disease)',
@@ -108,7 +109,8 @@ DISEASE_INFO = {
         'symptoms': 'ลำต้นแคระแกร็น ไม่เจริญเติบโต หรือมีการเจริญเติบโตน้อย ต้นมันสำปะหลังไม่สร้างหัว',
         'treatment': 'ใช้พันธุ์มันสำปะหลังต้านทานโรคพืช, กำจัดแมลงหวี่ขาว',
         'severity': 'ปานกลาง',
-        'emoji': '🟢'
+        'emoji': '🟢',
+        'example_images': sorted(glob.glob('streamlit/assets/img/CMD/*.jpg') + glob.glob('streamlit/assets/img/CMD/*.png'))
     },
     'HEALTHY': {
         'name': 'Healthy',
@@ -117,7 +119,8 @@ DISEASE_INFO = {
         'symptoms': 'ใบเขียว สด สุขภาพดี',
         'treatment': 'ดูแลรักษาตามปกติ, ป้องกันโรค',
         'severity': 'ไม่มี',
-        'emoji': '✅'
+        'emoji': '✅',
+        'example_images': sorted(glob.glob('streamlit/assets/img/HEALTY/*.jpg') + glob.glob('streamlit/assets/img/HEALTY/*.png'))
     }
 }
 
@@ -363,6 +366,20 @@ def remove_module_prefix(state_dict):
         new_state_dict[name] = v
     return new_state_dict
 
+def display_image_slider(images, caption=""):
+    if not images:
+        st.warning("ไม่พบรูปภาพตัวอย่าง")
+        return
+        
+    col1, col2 = st.columns([6, 1])
+    with col1:
+        selected_idx = st.slider("เลื่อนเพื่อดูรูปภาพ", 0, len(images)-1, 0, key=f"slider_{caption}")
+    with col2:
+        st.write(f"{selected_idx + 1}/{len(images)}")
+    
+    img = Image.open(images[selected_idx])
+    st.image(img, caption=caption, use_column_width=True)
+
 def main():
     load_css()
     st.markdown('<div class="farmer-emoji">🌱👨‍🌾🌱</div>', unsafe_allow_html=True)
@@ -485,6 +502,8 @@ def main():
                 st.write(f"**การรักษา:** {info['treatment']}")
                 if info['severity'] != 'ไม่มี':
                     st.write(f"**ระดับความรุนแรง:** {info['severity']}")
+                st.markdown("### 📸 รูปภาพตัวอย่าง")
+                display_image_slider(info['example_images'], f"ตัวอย่างอาการ {info['thai_name']}")
 
     st.markdown("---")
     st.markdown("""
