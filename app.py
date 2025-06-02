@@ -371,14 +371,29 @@ def display_image_slider(images, caption=""):
         st.warning("ไม่พบรูปภาพตัวอย่าง")
         return
         
-    col1, col2 = st.columns([6, 1])
-    with col1:
-        selected_idx = st.slider("เลื่อนเพื่อดูรูปภาพ", 0, len(images)-1, 0, key=f"slider_{caption}")
-    with col2:
-        st.write(f"{selected_idx + 1}/{len(images)}")
+    # Use session state to keep track of current image index
+    if f"image_index_{caption}" not in st.session_state:
+        st.session_state[f"image_index_{caption}"] = 0
     
-    img = Image.open(images[selected_idx])
-    st.image(img, caption=caption, use_column_width=True)
+    current_index = st.session_state[f"image_index_{caption}"]
+    
+    col1, col2, col3 = st.columns([1, 4, 1])
+    
+    with col1:
+        if st.button("⬅️ ก่อนหน้า", key=f"prev_{caption}"):
+            st.session_state[f"image_index_{caption}"] = (current_index - 1) % len(images)
+            st.rerun()
+    
+    with col2:
+        img = Image.open(images[current_index])
+        st.image(img, caption=caption, use_column_width=True)
+    
+    with col3:
+        if st.button("ถัดไป ➡️", key=f"next_{caption}"):
+            st.session_state[f"image_index_{caption}"] = (current_index + 1) % len(images)
+            st.rerun()
+    
+    st.write(f"รูปที่ {current_index + 1} จาก {len(images)}")
 
 def main():
     load_css()
