@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import timm
 import numpy as np
-from PIL import Image
+from PIL import Image, ExifTags
 import cv2
 from torchvision import transforms
 import plotly.express as px
@@ -410,8 +410,42 @@ class vit_base_patch32_model(nn.Module):
             return features
         return logits
 
+def fix_image_orientation(image):
+    """Fix image orientation based on EXIF data"""
+    try:
+        # Get EXIF data
+        for orientation in ExifTags.TAGS.keys():
+            if ExifTags.TAGS[orientation] == 'Orientation':
+                break
+        
+        exif = image._getexif()
+        if exif is not None:
+            orientation_value = exif.get(orientation)
+            
+            # Rotate image based on EXIF orientation
+            if orientation_value == 2:
+                image = image.transpose(Image.FLIP_LEFT_RIGHT)
+            elif orientation_value == 3:
+                image = image.rotate(180)
+            elif orientation_value == 4:
+                image = image.rotate(180).transpose(Image.FLIP_LEFT_RIGHT)
+            elif orientation_value == 5:
+                image = image.rotate(-90).transpose(Image.FLIP_LEFT_RIGHT)
+            elif orientation_value == 6:
+                image = image.rotate(-90)
+            elif orientation_value == 7:
+                image = image.rotate(90).transpose(Image.FLIP_LEFT_RIGHT)
+            elif orientation_value == 8:
+                image = image.rotate(90)
+    except (AttributeError, KeyError, IndexError):
+        # Cases when Exif data is not available/valid
+        pass
+    return image
+
 def validate_cassava_image(image, model):
     try:
+        # Fix image orientation first
+        image = fix_image_orientation(image)
         image = image.resize((448, 448))
         if image.mode != 'RGB':
             image = image.convert('RGB')
@@ -476,6 +510,9 @@ def load_model():
 
 def preprocess_image(image):
     """Preprocess image for model prediction"""
+    # Fix image orientation first
+    image = fix_image_orientation(image)
+    
     transform = transforms.Compose([
         transforms.Resize((448, 448)),
         transforms.ToTensor(),
@@ -1031,6 +1068,8 @@ def main():
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
+        # Fix image orientation before displaying
+        image = fix_image_orientation(image)
         col1, col2 = st.columns([1, 1])
 
         with col1:
