@@ -631,7 +631,6 @@ def main():
         weather_data = None
         if lat is not None and lon is not None:
             weather_data = get_historical_weather(lat, lon, image_date.strftime("%Y-%m-%d"), WEATHER_API_KEY)
-
         col1, col2 = st.columns([1, 1])
 
         with col1:
