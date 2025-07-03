@@ -14,16 +14,16 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 import glob
-import requests # Added for WeatherAPI
-from datetime import datetime, timedelta # Added for date handling
+import requests 
+from datetime import datetime, timedelta 
 from geopy.geocoders import Nominatim
 import folium
 from streamlit_folium import st_folium
 
 # --- Weather API Configuration ---
-WEATHER_API_KEY = "2e8cfa89ce124ecca55102846250706"  # <<<<<<< เปลี่ยนตรงนี้เป็น WeatherAPI Key ของคุณ!
+WEATHER_API_KEY = "94f7680251424030b49141625250307" 
 WEATHER_API_URL = "http://api.weatherapi.com/v1/history.json"
-WEATHER_CURRENT_API_URL = "http://api.weatherapi.com/v1/current.json"  # เพิ่ม endpoint สำหรับข้อมูลปัจจุบัน
+WEATHER_CURRENT_API_URL = "http://api.weatherapi.com/v1/current.json"  
 
 st.set_page_config(
     page_title="ระบบวิเคราะห์โรคมันสำปะหลัง",
